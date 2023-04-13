@@ -16,3 +16,5 @@
 .idea/
 .idea
 users/bin
+products/bin
+products/demo_product.db

@@ -9,7 +9,7 @@ import (
 
 const (
 	JWTSecret   = "zLDA0zPMSvHdkr4UvCOqU"
-	JwtExpHour  =1
+	JwtExpHour  = 1
 	JwtExpMin = 0
 	JwtExpSec = 30
 )
