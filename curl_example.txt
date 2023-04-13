@@ -1,0 +1,18 @@
+curl -X "POST" "http://localhost:8081/v1/users/auth" \
+     -H 'Accept: application/json' \
+     -H 'Content-Type: application/json' \
+     -d $'{
+  "email": "fira1026@gmail.com",
+  "password": "1234567"
+}'
+
+
+curl -X "POST" "http://localhost:8083/v1/orders/" \
+     -H 'Accept: application/json' \
+     -H 'Content-Type: application/json' \
+	 -H 'Authorization:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZpcmExMDI2QGdtYWlsLmNvbSIsImV4cCI6MTY4MTM4ODgxMCwiaWF0IjoxNjgxMzg1MTgwLCJuYmYiOjE2ODEzODUxODB9.wFU1-PQ94jlDdUJbmhKP_uJhKkXvIe-81k3tA982g-s' \
+     -d $'{
+  "product_name": "Apple",
+  "quantity": 2
+}'
+

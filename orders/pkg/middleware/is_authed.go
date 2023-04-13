@@ -1,19 +1,23 @@
 package middleware
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"net/http"
 	"strconv"
 	"strings"
-	"fmt"
 )
+
+const httpRequestKey = "httpRequest"
 
 var ErrUnauthorized = errors.New("unauthorized")
 
 // TODO: middleware should reside on project root, but I don't figure out how to, so I put it here
 func IsAuthenticatedMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), httpRequestKey, r)
+
 		errorMessage := "Authentication error"
 		tokenString := r.Header.Get("Authorization")
 		if tokenString == "" {
@@ -45,7 +49,7 @@ func IsAuthenticatedMiddleware(next http.Handler) http.Handler {
 		}
 		r.Header.Add("email", res.Email)
 
-		next.ServeHTTP(rw, r)
+		next.ServeHTTP(rw, r.WithContext(ctx))
 	})
 }
 
