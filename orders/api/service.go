@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -45,9 +46,10 @@ func (s *service) CreateOrder(ctx context.Context, product_name string, quantity
 	fmt.Printf("Creating order. Product: %s, price: %d", product_name, 999)
 
 	// Get the headers from the request object in the context
-	r, ok := ctx.Value(httpRequestKey).(*http.Request)
-	if !ok {
+	r, err := ctx.Value(httpRequestKey).(*http.Request)
+	if err != nil {
 		// TODO: handle error
+		fmt.Println(err)
 	}
 	email := r.Header.Get("Email")
 
@@ -62,14 +64,26 @@ func (s *service) CreateOrder(ctx context.Context, product_name string, quantity
 		// TODO: handle error
 		fmt.Println(err)
 	}
-	if req.StatusCode != http.StatusOK{
+	if req.StatusCode != http.StatusOK {
 		// TODO: handle error
 		fmt.Println(req.StatusCode)
 	}
 	// TODO: retrive price from req
-	// TODO: total_price = quantity * price
+	defer req.Body.Close()
+	type result struct {
+		Quantity int `json:"quantity`
+		Price    int `json:"price"`
+	}
+	var res result
+	err = json.NewDecoder(req.Body).Decode(&res)
+	if err != nil {
+		// TODO: handle error
+		fmt.Println("Invalid response")
+	}
+	total_price := quantity * res.Price
+
 	// TODO: insert {email, product_name, quantity and total_price} to orders table
 
 	// return order_id, email, total_price, nil
-	return 123, email, 999, nil
+	return 123, email, total_price, nil
 }
