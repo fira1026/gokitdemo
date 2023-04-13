@@ -6,10 +6,12 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"fmt"
 )
 
 var ErrUnauthorized = errors.New("unauthorized")
 
+// TODO: middleware should reside on project root, but I don't figure out how to, so I put it here
 func IsAuthenticatedMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		errorMessage := "Authentication error"
@@ -22,7 +24,7 @@ func IsAuthenticatedMiddleware(next http.Handler) http.Handler {
 			"token": "` + tokenString + `"
 		}`
 		//@TODO use env var
-		req, err := http.Post("http://localhost:8081/v1/validate-token", "text/plain", strings.NewReader(payload))
+		req, err := http.Post("http://localhost:8081/v1/users/validate-token", "text/plain", strings.NewReader(payload))
 		if err != nil {
 			respondWithError(rw, http.StatusUnauthorized, err.Error(), errorMessage)
 			return

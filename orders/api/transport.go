@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/fira1026/gokitdemo/pkg/middleware"
+	"orders/pkg/middleware"
 
 	"context"
 	"encoding/json"

@@ -40,7 +40,7 @@ func (s *service) CreateOrder(ctx context.Context, product_name string, quantity
 	// Fake log for price
 	fmt.Printf("Creating order. Product: %s, price: %d", product_name, 999)
 
-	// TODO: call /v1/users/validate-token to get user email
+	// TODO: call /v1/users/validate-token to get user email in request header
 	// TODO: call /v1/products/decrease-quantity to get updated quantity and price
 	// TODO: total_price = quantity * price
 	// TODO: insert {email, product_name, quantity and total_price} to orders table
