@@ -1,6 +1,8 @@
 package api
 
 import (
+	"github.com/fira1026/gokitdemo/pkg/middleware"
+
 	"context"
 	"encoding/json"
 	"net/http"
@@ -25,6 +27,7 @@ func NewHttpServer(svc Service, logger kitlog.Logger) *mux.Router {
 	)
 
 	r := mux.NewRouter()
+	r.Use(middleware.IsAuthenticatedMiddleware)
 	r.Methods("POST").Path("/v1/orders/").Handler(createOrderHandler)
 	return r
 }
