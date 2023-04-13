@@ -65,7 +65,6 @@ func decodeDecreaseProductQuantityRequest(ctx context.Context, r *http.Request) 
 	return request, nil
 }
 
-
 func encodeResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
 	return json.NewEncoder(w).Encode(response)
 }

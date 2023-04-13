@@ -23,7 +23,7 @@ func main() {
 	// Start products api server
 	r := api.NewHttpServer(api.NewService(), logger)
 	logger.Log("msg", "HTTP", "addr", "8081")
-	logger.Log("err", http.ListenAndServe(":8081", r))
+	logger.Log("err", http.ListenAndServe(":8082", r))
 }
 
 func initDb() {
