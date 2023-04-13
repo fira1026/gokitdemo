@@ -1,5 +1,5 @@
 # gokitdemo
-A demo for go-kit useage
+A demo for go-kit usage
 
 ## How to build and run the services.
 
@@ -100,5 +100,5 @@ Be aware the product quantity will be decreased accordingly. If there is not eno
 
 * go-kit transport supports http and grpc. I started with grpc due to grpc is generally with higher performance but I found it is a bit difficult to implement compared to http, it needs to handle both server side and client side, so finally I use http.
 * I put the token validation in the middleware and it is ideally resides under root directory so each service can use it, but I encountered package import issue so I put it under the ```Order``` sercvice.
-* I was aware of the product quantity decreement would have race-condition in a real world project. Generally I will use ```SELECT FOR UPDATE``` to prevent it, but sqlite3 doesn't support the feature so I let be as is.
+* I was aware of the product quantity decreement would have race-condition in a real world project. Generally I will use ```SELECT FOR UPDATE``` to prevent it, but sqlite3 doesn't support the feature so I let it be as is.
 * After token validation the middleware will add user email to the request header. I found out it is not trivial to get the header in the serivice handler. I studied how to resolve it and I did but I am not sure if it is the best practice.

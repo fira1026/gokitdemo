@@ -20,3 +20,5 @@ products/bin
 orders/bin
 products/demo_product.db
 orders/demo_order.db
+.vscode/
+
