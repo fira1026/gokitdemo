@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"products/api"
+	"orders/api"
 
 	"github.com/go-kit/kit/log"
 	_ "github.com/mattn/go-sqlite3"
@@ -22,12 +22,12 @@ func main() {
 
 	// Start products api server
 	r := api.NewHttpServer(api.NewService(), logger)
-	logger.Log("msg", "HTTP", "addr", "8082")
-	logger.Log("err", http.ListenAndServe(":8082", r))
+	logger.Log("msg", "HTTP", "addr", "8083")
+	logger.Log("err", http.ListenAndServe(":8083", r))
 }
 
 func initDb() {
-	db, err := sql.Open("sqlite3", "demo_product.db")
+	db, err := sql.Open("sqlite3", "demo_order.db")
 
 	if err != nil {
 		fmt.Println(err)
@@ -36,12 +36,10 @@ func initDb() {
 
 	defer db.Close()
 
-	_, table_check := db.Query("SELECT * FROM products")
+	_, table_check := db.Query("SELECT * FROM orders")
 	if table_check != nil {
 		sts := `
-		CREATE TABLE products(id INTEGER PRIMARY KEY, name TEXT, price INT, quantity INT);
-		INSERT INTO products(name, price, quantity) VALUES('Apple', '20', '50');
-		INSERT INTO products(name, price, quantity) VALUES('banana', '10', '100');
+		CREATE TABLE orders(id INTEGER PRIMARY KEY, email TEXT, product_name TEXT, price INT, total_price INT);
 		`
 		_, err = db.Exec(sts)
 
@@ -50,10 +48,10 @@ func initDb() {
 			return
 		}
 
-		fmt.Println("table products created")
+		fmt.Println("table orders created")
 	}
 
-	rows, err := db.Query("SELECT * FROM products")
+	rows, err := db.Query("SELECT * FROM orders")
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -64,17 +62,18 @@ func initDb() {
     for rows.Next() {
 
         var id int
-        var name string
-        var price int
+		var email string
+        var product_name string
 		var quantity int
+        var total_price int
 
-        err = rows.Scan(&id, &name, &price, &quantity)
+        err = rows.Scan(&id, &email, &product_name, &quantity, &total_price)
 
         if err != nil {
 			fmt.Println(err)
 			return
         }
 
-        fmt.Printf("%d %s %d %d\n" , id, name, price, quantity)
+        fmt.Printf("%d %s %s %d %d\n" , id, email, product_name, quantity, total_price)
 	}
 }
