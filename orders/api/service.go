@@ -6,6 +6,8 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
+	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -43,12 +45,28 @@ func (s *service) CreateOrder(ctx context.Context, product_name string, quantity
 	fmt.Printf("Creating order. Product: %s, price: %d", product_name, 999)
 
 	// Get the headers from the request object in the context
-	req, ok := ctx.Value(httpRequestKey).(*http.Request)
+	r, ok := ctx.Value(httpRequestKey).(*http.Request)
 	if !ok {
 		// TODO: handle error
 	}
-	email := req.Header.Get("Email")
-	// TODO: call /v1/products/decrease-quantity to get updated quantity and price
+	email := r.Header.Get("Email")
+
+	// call /v1/products/decrease-quantity to get updated quantity and price
+	payload := `{
+		"product_name": "` + product_name + `",
+		"quantity": ` + strconv.Itoa(quantity) + `
+	}`
+
+	req, err := http.Post("http://localhost:8082/v1/products/decrease-quantity", "text/plain", strings.NewReader(payload))
+	if err != nil {
+		// TODO: handle error
+		fmt.Println(err)
+	}
+	if req.StatusCode != http.StatusOK{
+		// TODO: handle error
+		fmt.Println(req.StatusCode)
+	}
+	// TODO: retrive price from req
 	// TODO: total_price = quantity * price
 	// TODO: insert {email, product_name, quantity and total_price} to orders table
 

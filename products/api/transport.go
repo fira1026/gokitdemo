@@ -25,7 +25,7 @@ func NewHttpServer(svc Service, logger kitlog.Logger) *mux.Router {
 	)
 
 	r := mux.NewRouter()
-	r.Methods("PUT").Path("/v1/products/decrease-quantity").Handler(decreaseProductQuantityHandler)
+	r.Methods("POST").Path("/v1/products/decrease-quantity").Handler(decreaseProductQuantityHandler)
 	return r
 }
 
