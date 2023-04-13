@@ -46,10 +46,10 @@ func (s *service) CreateOrder(ctx context.Context, product_name string, quantity
 	fmt.Printf("Creating order. Product: %s, price: %d", product_name, 999)
 
 	// Get the headers from the request object in the context
-	r, err := ctx.Value(httpRequestKey).(*http.Request)
-	if err != nil {
+	r, ok := ctx.Value(httpRequestKey).(*http.Request)
+	if !ok {
 		// TODO: handle error
-		fmt.Println(err)
+		fmt.Println("Internal error")
 	}
 	email := r.Header.Get("Email")
 
@@ -60,30 +60,42 @@ func (s *service) CreateOrder(ctx context.Context, product_name string, quantity
 	}`
 
 	req, err := http.Post("http://localhost:8082/v1/products/decrease-quantity", "text/plain", strings.NewReader(payload))
-	if err != nil {
-		// TODO: handle error
-		fmt.Println(err)
-	}
+	checkErr(err)
+
 	if req.StatusCode != http.StatusOK {
 		// TODO: handle error
 		fmt.Println(req.StatusCode)
 	}
-	// TODO: retrive price from req
+
+	// retrive price from req
 	defer req.Body.Close()
 	type result struct {
 		Quantity int `json:"quantity`
 		Price    int `json:"price"`
 	}
-	var res result
-	err = json.NewDecoder(req.Body).Decode(&res)
-	if err != nil {
-		// TODO: handle error
-		fmt.Println("Invalid response")
-	}
-	total_price := quantity * res.Price
+	var ressult result
+	err = json.NewDecoder(req.Body).Decode(&ressult)
+	checkErr(err)
 
-	// TODO: insert {email, product_name, quantity and total_price} to orders table
+	total_price := quantity * ressult.Price
 
-	// return order_id, email, total_price, nil
-	return 123, email, total_price, nil
+	// insert {email, product_name, quantity and total_price} to orders table
+	stmt, err := db.Prepare("INSERT INTO orders(email, product_name, quantity, total_price) values(?,?,?,?)")
+    checkErr(err)
+
+    res, err := stmt.Exec(email, product_name, quantity, total_price)
+    checkErr(err)
+
+	order_id, err := res.LastInsertId()
+    checkErr(err)
+
+	fmt.Printf("Order created. order_id: %d\n", order_id)
+
+	return int(order_id), email, total_price, nil
+}
+
+func checkErr(err error) {
+    if err != nil {
+        panic(err)
+    }
 }

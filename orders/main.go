@@ -39,7 +39,7 @@ func initDb() {
 	_, table_check := db.Query("SELECT * FROM orders")
 	if table_check != nil {
 		sts := `
-		CREATE TABLE orders(id INTEGER PRIMARY KEY, email TEXT, product_name TEXT, price INT, total_price INT);
+		CREATE TABLE orders(id INTEGER PRIMARY KEY, email TEXT, product_name TEXT, quantity INT, total_price INT);
 		`
 		_, err = db.Exec(sts)
 
